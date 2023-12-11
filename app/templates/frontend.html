@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Valve Control Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #003366; /* Dark blue background */
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+        h1{
+            padding: 20px;
+        }
+        
+        .valve-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .valve {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background-color: red;
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+        .valve::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            width: 70%;
+            height: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .valve.open {
+            background-color: green;
+            transform: rotate(90deg);
+        }
+        .time-input {
+            display: block;
+            margin: 10px auto;
+        }
+        label, input[type="time"] {
+            color: white;
+        }
+        
+        .valve-with-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .valve-controls-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+    </style>
+    <script>
+        // This function could be used to send a command to open or close a valve immediately.
+        function changeValveStatus(valveId, action) {
+            fetch('/api/change-valve-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ valveId: valveId, action: action }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                let valve = document.getElementById(`valve${valveId}`);
+                if (action === 'open') {
+                    valve.classList.add('open');
+                } else {
+                    valve.classList.remove('open');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // This function sends the time set commands to the Flask backend.
+        function setTime(valveId, action, time) {
+            fetch('/api/set-time', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ deviceId: valveId, action: action, time: time }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Time set successfully for ' + valveId);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function toggleValve(valveId) {
+            var valve = document.getElementById('valve' + valveId);
+            valve.classList.toggle('open'); // Toggle the 'open' class on the valve
+
+            // Determine the action based on the presence of the 'open' class
+            var action = valve.classList.contains('open') ? 'open' : 'close';
+            changeValveStatus(valveId, action);
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Valve Control Panel</h1>
+    
+    <div class="valve-controls-container">
+        <!-- Valve 1 with its time controls -->
+        <div class="valve-with-controls">
+            <div id="valve1" class="valve" onclick="toggleValve('1')"></div>
+            <div class="time-input">
+                <label for="openTimeValve1">Set Open Time:</label>
+                <input type="time" id="openTimeValve1">
+                <button onclick="setTime('1', 'open', document.getElementById('openTimeValve1').value)">Set Open Time</button>
+            </div>
+            <div class="time-input">
+                <label for="closeTimeValve1">Set Close Time:</label>
+                <input type="time" id="closeTimeValve1">
+                <button onclick="setTime('1', 'close', document.getElementById('closeTimeValve1').value)">Set Close Time</button>
+            </div>
+        </div>
+
+        <!-- Valve 2 with its time controls -->
+        <div class="valve-with-controls">
+            <div id="valve2" class="valve" onclick="toggleValve('2')"></div>
+            <div class="time-input">
+                <label for="openTimeValve2">Set Open Time:</label>
+                <input type="time" id="openTimeValve2">
+                <button onclick="setTime('2', 'open', document.getElementById('openTimeValve2').value)">Set Open Time</button>
+            </div>
+            <div class="time-input">
+                <label for="closeTimeValve2">Set Close Time:</label>
+                <input type="time" id="closeTimeValve2">
+                <button onclick="setTime('2', 'close', document.getElementById('closeTimeValve2').value)">Set Close Time</button>
+            </div>
+        </div>
+
+        <!-- Valve 3 with its time controls -->
+        <div class="valve-with-controls">
+            <div id="valve3" class="valve" onclick="toggleValve('3')"></div>
+            <div class="time-input">
+                <label for="openTimeValve3">Set Open Time:</label>
+                <input type="time" id="openTimeValve3">
+                <button onclick="setTime('3', 'open', document.getElementById('openTimeValve3').value)">Set Open Time</button>
+            </div>
+            <div class="time-input">
+                <label for="closeTimeValve3">Set Close Time:</label>
+                <input type="time" id="closeTimeValve3">
+                <button onclick="setTime('3', 'close', document.getElementById('closeTimeValve3').value)">Set Close Time</button>
+            </div>
+        </div>
+
+        <!-- Valve 4 with its time controls -->
+        <div class="valve-with-controls">
+            <div id="valve4" class="valve" onclick="toggleValve('4')"></div>
+            <div class="time-input">
+                <label for="openTimeValve4">Set Open Time:</label>
+                <input type="time" id="openTimeValve4">
+                <button onclick="setTime('4', 'open', document.getElementById('openTimeValve4').value)">Set Open Time</button>
+            </div>
+            <div class="time-input">
+                <label for="closeTimeValve4">Set Close Time:</label>
+                <input type="time" id="closeTimeValve4">
+                <button onclick="setTime('4', 'close', document.getElementById('closeTimeValve4').value)">Set Close Time</button>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
+
